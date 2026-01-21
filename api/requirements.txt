@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+pytest
+pytest-cov
+requests
+responses
+fastapi
+uvicorn
+pytest
+pytest-cov
+requests
+responses
+httpx
