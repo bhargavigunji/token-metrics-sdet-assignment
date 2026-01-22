@@ -9,53 +9,49 @@ jobs:
   contracts:
     name: Contracts (Foundry)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: contracts
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Debug repo structure
+        run: |
+          pwd
+          ls -la
+          find . -maxdepth 2 -type d
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
           version: stable
 
-      - name: Show versions
+      - name: Install forge-std + run tests
         run: |
+          cd contracts
           forge --version
-          cast --version
-
-      # Ensures forge-std exists in a fresh CI checkout
-      - name: Install forge-std
-        run: |
           forge install foundry-rs/forge-std --no-commit
-
-      - name: Run tests
-        run: forge test -vvv
+          forge test -vvv
 
   api:
     name: API (pytest + coverage)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: api
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Debug repo structure
+        run: |
+          pwd
+          ls -la
+          find . -maxdepth 2 -type d
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+      - name: Install dependencies + run tests
         run: |
+          cd api
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Run tests + coverage gate
-        env:
-          PYTHONWARNINGS: ignore
-        run: |
           pytest -q --cov=app --cov-report=term-missing --cov-fail-under=70 -W ignore
