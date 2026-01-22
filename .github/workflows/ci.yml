@@ -17,7 +17,6 @@ jobs:
         run: |
           pwd
           ls -la
-          find . -maxdepth 3 -type d | sed -n '1,120p'
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
@@ -26,9 +25,13 @@ jobs:
 
       - name: Run contract tests
         run: |
-          cd token-metrics-sdet-assignment/contracts
+          cd contracts
           forge --version
-          forge install foundry-rs/forge-std --no-commit
+          # If forge-std is already committed, this will be quick.
+          # If not, it installs it for CI.
+          if [ ! -d "lib/forge-std" ]; then
+            forge install foundry-rs/forge-std --no-commit
+          fi
           forge test -vvv
 
   api:
@@ -42,7 +45,6 @@ jobs:
         run: |
           pwd
           ls -la
-          find . -maxdepth 3 -type d | sed -n '1,120p'
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -53,7 +55,7 @@ jobs:
         env:
           PYTHONWARNINGS: ignore
         run: |
-          cd token-metrics-sdet-assignment/api
+          cd api
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pytest -q --cov=app --cov-report=term-missing --cov-fail-under=70 -W ignore
