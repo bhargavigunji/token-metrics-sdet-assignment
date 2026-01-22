@@ -1,0 +1,13 @@
+# Python
+api/venv/
+__pycache__/
+*.pyc
+.coverage
+.pytest_cache/
+
+# Foundry
+contracts/out/
+contracts/cache/
+
+# OS
+.DS_Store
